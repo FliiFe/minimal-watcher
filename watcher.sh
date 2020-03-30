@@ -35,7 +35,7 @@ function fetchurl {
     url=$1
     nick=$2
 
-    mostrecent=$(find -iname "*$nick*" | tail -n 1)
+    mostrecent=$(find -name "$nick-*" | tail -n 1)
     if [[ -z "$mostrecent" ]]; then
         mostrecent="/dev/null"
     fi
