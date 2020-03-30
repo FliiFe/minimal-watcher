@@ -26,3 +26,7 @@ Every time a new version is detected, the watcher outputs a line similar to this
 [HH:MM:ss] new version <nickname>
 ```
 and a new file is saved in the `results` directory named `<nickname>-<epoch>.html`
+
+## New version hook
+
+You can fill in the `newhook.sh` script with commands you'd like to run when a new version is detected. The first (and only) argument given to the script will be the changed url's `nickname`
