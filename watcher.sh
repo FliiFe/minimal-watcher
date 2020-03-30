@@ -48,8 +48,8 @@ function fetchurl {
 
     if ! diff "$tempfiledest" "$mostrecent" -q >/dev/null; then
         log $(color "new version" "1;4") $(color "$nick" 92)
-        ../newhook.sh "$nick" &
         cp "$tempfiledest" "$nick-$(date +%s).html"
+        ../newhook.sh "$nick" &
     fi
 }
 
