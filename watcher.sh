@@ -3,7 +3,7 @@
 towatch=$(cat watchlist)
 
 mkdir -p results
-cd results
+# cd results
 
 if ! command -v curl >/dev/null; then
     echo "curl is not available"
@@ -34,22 +34,23 @@ function log {
 function fetchurl {
     url=$1
     nick=$2
+    preprocessor=$3
 
-    mostrecent=$(find -name "$nick-*" | head -n 1)
+    mostrecent=$(find results/ -name "$nick-*" | sort | tail -n 1)
     if [[ -z "$mostrecent" ]]; then
         mostrecent="/dev/null"
     fi
 
     tempfiledest="/tmp/watcher-$nick.txt"
 
-    curl "$url" >"$tempfiledest" -s
+    curl "$url" -s | $preprocessor >"$tempfiledest"
 
     log "$(color $nick) fetched"
 
     if ! diff "$tempfiledest" "$mostrecent" -q >/dev/null; then
         log $(color "new version" "1;4") $(color "$nick" 92)
-        cp "$tempfiledest" "$nick-$(date +%s).html"
-        ../newhook.sh "$nick" &
+        cp "$tempfiledest" "results/$nick-$(date +%s).html"
+        ./newhook.sh "$nick" &
     fi
 }
 
@@ -57,9 +58,13 @@ function watchurl {
     nick=$1
     interval=$2
     url=$3
-    log "Watching $(color $nick 33) at url $url with interval $(color $interval 33)"
+    preprocessor=$4
+    if [[ -z "$preprocessor" ]]; then
+        preprocessor="cat -"
+    fi
+    log "Watching $(color $nick 33) at url $url with interval $(color $interval 33). Preprocessor: "$(color "$preprocessor" 33)
     while true; do
-        fetchurl $url $nick
+        fetchurl $url $nick "$preprocessor"
         sleep $interval
     done;
 }
