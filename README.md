@@ -14,8 +14,8 @@ Notice the lack of spaces. `nickname` should be a word identifying the url. It s
 
 Here is the config file this watcher was created for:
 ```
-centrale,5,https://www.concours-centrale-supelec.fr/,preprocessors/centrale.sh
-mines,5,https://www.concoursminesponts.fr/,preprocessors/mines.sh
+centrale,5,https://www.concours-centrale-supelec.fr/,iconv -f iso-8859-1 -t utf8
+mines,5,https://www.concoursminesponts.fr/,perl -pe 's/.rwcache=\d+//g'
 scei,5,http://www.scei-concours.fr/
 banques-ecoles,5,https://banques-ecoles.fr/
 ```
@@ -37,11 +37,10 @@ You can fill in the `newhook.sh` script with commands you'd like to run when a n
 For each url, you can define a preprocessor which will modify the downloaded webpage to your liking (to change the encoding, remove data that might change but that you don't care about, ...). Here is an example of a preprocessor to change the encoding:
 
 ```sh
-#!/usr/bin/env bash
 iconv -f iso-8859-1 -t utf8
 ```
 
 with the corresponding line in the watchlist
 ```
-centrale,5,https://www.concours-centrale-supelec.fr/,preprocessors/centrale.sh
+centrale,5,https://www.concours-centrale-supelec.fr/,iconv -f iso-8859-1 -t utf8
 ```
