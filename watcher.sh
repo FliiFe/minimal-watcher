@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-towatch=$(cat watchlist)
-
 mkdir -p results
 # cd results
 
@@ -34,7 +32,7 @@ function log {
 function fetchurl {
     url=$1
     nick=$2
-    preprocessor=$3
+    preprocessor="${@:3}"
 
     mostrecent=$(find results/ -name "$nick-*" | sort | tail -n 1)
     if [[ -z "$mostrecent" ]]; then
@@ -58,7 +56,7 @@ function watchurl {
     nick=$1
     interval=$2
     url=$3
-    preprocessor=$4
+    preprocessor="${@:4}"
     if [[ -z "$preprocessor" ]]; then
         preprocessor="cat -"
     fi
@@ -69,8 +67,8 @@ function watchurl {
     done;
 }
 
-for l in $towatch; do
+while read l ; do
     watchurl $(echo $l | sed s/,/\\n/g) &
-done;
+done <watchlist
 
 wait
