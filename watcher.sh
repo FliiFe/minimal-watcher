@@ -41,14 +41,17 @@ function fetchurl {
 
     tempfiledest="/tmp/watcher-$nick.txt"
 
-    curl "$url" -s | $preprocessor >"$tempfiledest"
+    curl "$url" -s | $preprocessor | tee "$tempfiledest" | wc -c | read fl
+
 
     log "$(color $nick) fetched"
 
-    if ! diff "$tempfiledest" "$mostrecent" -q >/dev/null; then
-        log $(color "new version" "1;4") $(color "$nick" 92)
-        cp "$tempfiledest" "results/$nick-$(date +%s).html"
-        ./newhook.sh "$nick" &
+    if [[ "$fl" -eq 0 ]]; then 
+        if ! diff "$tempfiledest" "$mostrecent" -q >/dev/null; then
+            log $(color "new version" "1;4") $(color "$nick" 92)
+            cp "$tempfiledest" "results/$nick-$(date +%s).html"
+            ./newhook.sh "$nick" &
+        fi
     fi
 }
 
