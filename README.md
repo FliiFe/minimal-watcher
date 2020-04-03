@@ -44,3 +44,7 @@ with the corresponding line in the watchlist
 ```
 centrale,5,https://www.concours-centrale-supelec.fr/,iconv -f iso-8859-1 -t utf8
 ```
+
+## Quiet !
+
+By default the watcher will be verbose, and output a line for each url after each request, which can result in quickly growing log files. The `-q` option will turn those logs off and keep the bare minimal: the initial few lines indicating the preprocessors, urls, nicknames and intervals, and the new version alerts.
