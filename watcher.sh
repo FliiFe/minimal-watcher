@@ -48,7 +48,7 @@ function fetchurl {
     $quiet || log "$(color $nick) fetched, file length $(color $fl)"
 
     if [[ "$fl" -ne 0 ]]; then
-        if ! diff "$tempfiledest" "$mostrecent" -q >/dev/null; then
+        if ! diff -wEZbB "$tempfiledest" "$mostrecent" -q >/dev/null; then
             log $(color "new version" "1;4") $(color "$nick" 92)
             cp "$tempfiledest" "results/$nick-$(date +%s).html"
             ./newhook.sh "$nick" &
