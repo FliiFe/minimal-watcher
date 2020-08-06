@@ -34,7 +34,8 @@ function log {
 function fetchurl {
     url=$1
     nick=$2
-    preprocessor="${@:3}"
+    insecure=$3
+    preprocessor="${@:4}"
 
     mostrecent=$(find results/ -name "$nick-*" | sort | tail -n 1)
     if [[ -z "$mostrecent" ]]; then
@@ -43,7 +44,7 @@ function fetchurl {
 
     tempfiledest="/tmp/watcher-$nick.txt"
 
-    fl=$(curl "$url" -s | $preprocessor | tee "$tempfiledest" | wc -c)
+    fl=$(curl "$url" $($insecure && printf -- -sk || printf -- -s) | $preprocessor | tee "$tempfiledest" | wc -c)
 
     $quiet || log "$(color $nick) fetched, file length $(color $fl)"
 
@@ -57,16 +58,17 @@ function fetchurl {
 }
 
 function watchurl {
-    nick=$1
+    insecure=$([[ "$1" == '!'* ]] && echo true || echo false)
+    nick=${1/#!/}
     interval=$2
     url=$3
     preprocessor="${@:4}"
     if [[ -z "$preprocessor" ]]; then
         preprocessor="cat -"
     fi
-    log "Watching $(color $nick 33) at url $url with interval $(color $interval 33). Preprocessor: "$(color "$preprocessor" 33)
+    log "Watching $(color $nick 33) at url $url ("$($insecure && color "insecure requests" 31 || color "secure resquests")") with interval $(color $interval 33). Preprocessor: "$(color "$preprocessor" 33)
     while true; do
-        fetchurl $url $nick "$preprocessor"
+        fetchurl $url $nick $insecure "$preprocessor"
         sleep $interval
     done;
 }
