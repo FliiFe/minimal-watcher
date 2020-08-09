@@ -44,7 +44,7 @@ function fetchurl {
 
     tempfiledest="/tmp/watcher-$nick.txt"
 
-    fl=$(curl "$url" $($insecure && printf -- -sk || printf -- -s) | $preprocessor | tee "$tempfiledest" | wc -c)
+    fl=$(curl "$url" $($insecure && printf -- -sk || printf -- -s) | eval $preprocessor | tee "$tempfiledest" | wc -c)
 
     $quiet || log "$(color $nick) fetched, file length $(color $fl)"
 
